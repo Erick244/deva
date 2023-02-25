@@ -1,0 +1,65 @@
+.table {
+	width: 95%;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	border-radius: 5px;
+	background-color: var(--color3);
+	border-collapse: collapse;
+}
+
+.table thead {
+	background-color: rgb(51, 31, 70);
+	color: #fff;
+}
+
+.table .thead th {
+	padding: 10px;
+	font-weight: 400;
+	text-align: start;
+}
+
+.table .tbody tr:nth-child(even) {
+	background-color: #8d8d8d;
+}
+
+.table .tbody tr:hover {
+	background-color: #3a2d3f23;
+	color: #fff;
+}
+
+.table .tbody td {
+	padding: 10px;
+	text-align: start;
+	border-bottom: 1px solid var(--bg-color);
+	/* color: var(--bg-color2); */
+}
+
+.table .tbody .containerButtons button {
+	padding: 5px;
+	font-size: 1rem;
+	border-radius: 5px;
+	color: #fff;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	transition: all 100ms ease;
+}
+
+.table .tbody .containerButtons button:hover {
+	transform: translateY(-2px);
+	box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.199);
+}
+
+.table .tbody .containerButtons button:active {
+	transform: none;
+	box-shadow: none;
+}
+
+.containerButtons .edit {
+	margin-right: 5px;
+	background-color: rgb(248, 134, 3);
+}
+
+.containerButtons .delete {
+	background-color: crimson;
+}

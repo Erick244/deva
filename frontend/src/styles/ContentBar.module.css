@@ -1,0 +1,54 @@
+.containerContentBar {
+	display: flex;
+	align-items: center;
+	grid-area: ContentBar;
+	background-color: var(--bg-color);
+	box-shadow: var(--shadow-top);
+}
+
+.containerContentBar button {
+	margin-left: 20px;
+	padding: 15px 20px;
+	border-radius: 5px;
+	border: none;
+	outline: none;
+	background-color: transparent;
+	color: #fff;
+	font-size: 1.1rem;
+	cursor: pointer;
+	transition: all 300ms ease;
+}
+
+.containerContentBar button i {
+	display: flex;
+	transition: all 100ms ease;
+}
+
+.containerContentBar .createButton {
+	border: 2px solid var(--color);
+	background-color: rgba(137, 67, 121, 0.341);
+}
+
+
+.containerContentBar .editButton {
+	border: 2px solid yellow;
+	background-color: rgba(255, 166, 0, 0.341);
+}
+
+.containerContentBar .deleteButton {
+	border: 2px solid crimson;
+	background-color: rgba(163, 36, 36, 0.341);
+}
+
+
+.createButton:hover,
+.editButton:hover,
+.deleteButton:hover {
+	filter: brightness(1.3);
+}
+
+.createButton:hover>i,
+.editButton:hover>i,
+.deleteButton:hover>i {
+	transform: scale(1.3);
+}

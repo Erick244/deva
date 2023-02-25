@@ -1,0 +1,102 @@
+.adminForm {
+	display: flex;
+	flex-direction: column;
+	padding: 30px;
+	margin-top: 120px;
+}
+
+.adminForm .areaForm {
+	margin-bottom: 20px;
+}
+
+.areaForm label {
+	color: var(--color);
+}
+
+.areaForm label i {
+	color: var(--color3);
+}
+
+.areaForm input {
+	width: 100%;
+	padding: 10px;
+	font-size: 1.1rem;
+	border: 1px solid var(--color);
+	outline: none;
+	border-radius: 5px;
+	background-color: var(--bg-color2);
+	color: #fff;
+}
+
+.areaForm input:disabled {
+	background-color: rgba(34, 34, 34, 0.144);
+	color: #fff;
+}
+
+.areaForm input:hover {
+	background-color: #2f15352a;
+}
+
+.areaForm input:focus {
+	background-color: #2f15352a;
+}
+
+.adminCheckbox {
+	display: flex;
+	align-items: center;
+}
+
+.adminCheckbox input {
+	width: 20px;
+	height: 20px;
+	margin-left: 10px;
+}
+
+.adminForm hr {
+	width: 100%;
+	height: 2px;
+	margin: 10px 0 30px 0;
+	border: none;
+	background: linear-gradient(to right, transparent, var(--color), transparent);
+}
+
+.textEditor {
+	background-color: rgb(255, 255, 255);
+	padding: 20px;
+	border-radius: 10px;
+}
+
+.containerButtons {
+	margin: 20px 0;
+}
+
+.containerButtons button {
+	border: none;
+	outline: none;
+	padding: 15px 20px;
+	border-radius: 7px;
+	cursor: pointer;
+}
+
+.containerButtons .submit {
+	margin-right: 10px;
+	background-color: transparent;
+	border: 2px solid var(--color2);
+	color: #fff;
+	transition: 100ms ease all;
+}
+
+.containerButtons .submit:hover {
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.377);
+	background-color: var(--color2);
+}
+
+.containerButtons .cancel {
+	background-color: var(--color3);
+	color: #fff;
+}
+
+.containerButtons .cancel:hover {
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.377);
+	opacity: 80%;
+}

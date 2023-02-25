@@ -1,0 +1,36 @@
+.subTheme {
+	display: flex;
+	margin-bottom: 15px;
+	border: 1px solid var(--color3);
+	border-right: none;
+	border-top: none;
+	border-radius: 0 0 0 5px;
+	font-weight: 100;
+	font-size: 0.9rem;
+	padding: 5px;
+	background-color: #c5c5c507;
+	color: #ffffffcb;
+	cursor: pointer;
+	transition: all 300ms ease;
+}
+
+.subTheme:hover {
+	color: #fff;
+	background-color: #89437959;
+}
+
+.subTheme a {
+	flex-grow: 1;
+}
+
+.subTheme i {
+	display: flex;
+	font-size: 1.1rem;
+	padding: 1px;
+}
+
+.subTheme i:hover {
+	background-color: #ffffff0e;
+	border-radius: 50%;
+}
+

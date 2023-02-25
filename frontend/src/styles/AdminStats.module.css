@@ -1,0 +1,25 @@
+.adminStats {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 150px;
+}
+
+.adminStats > div {
+	width: 300px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 40px 20px;
+	font-size: 2rem;
+	border-radius: 10px;
+	margin: 20px 10px;
+	flex-grow: 1;
+	color: #fff;
+	background-color: var(--bg-color2);
+}
+
+.adminStats > div i {
+	display: flex;
+	font-size: 3rem;
+	color: var(--color);
+}

@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+:root {
+	--bg-color: #21212b;
+	--bg-color2: #181820;
+	--bg-color3: #17171f;
+	
+	--color: #55254a;
+	--color2: #69345d;
+	--color3: #6d6374;
+
+	--shadow-right: 3px 0px 8px #0000006e;
+	--shadow-bottom: 0px 3px 8px #0000006e;
+	--shadow-top: 0px -3px 8px #0000006e;
+}
+
+* {
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
+	font-family: 'Ubuntu', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.v-middle {
+	vertical-align: middle;
+}
+
+/* react-quill styles */
+
+.ql-size-small {
+	font-size: 0.8rem;
+}
+
+.ql-size-large {
+	font-size: 1.2rem;
+}
+
+.ql-size-huge {
+	font-size: 1.5rem;
+}
+
+.ql-font-serif {
+	font-family: serif;
+	font-size: 1.05rem;
+}
+
+.ql-font-monospace {
+	font-family: monospace;
+    font-size: 1rem;
+}

@@ -1,0 +1,66 @@
+import axios from "axios";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import { useStore } from "../../config/Store";
+import { errorMessage } from "../../config/Toastify";
+import { baseApiUrl } from "../../global";
+import CategoryModel from "../../models/Category.model";
+import styles from "../../styles/Aside.module.css";
+import Category from "../Category";
+import { menuIcon, plusIcon } from "../view/Icons";
+
+interface AisdeProps {
+	hideMenuIcon: boolean;
+}
+
+export default function Aside(props: AisdeProps) {
+	const { visibleMenu, setVisibleMenu } = useStore();
+	const [categories, setCategories] = useState<CategoryModel[]>([]);
+	const { user, categoryFormVisible, setCategoryFormVisible, isAuthenticated, setCurrentCategoryId, currentCategoryId, updatedCategory } = useStore();
+	const router = useRouter();
+
+	async function getCategories() {
+		try {
+			const res = await axios.get(`${baseApiUrl}/userCategories`);
+			const data = await res.data;
+			const categories = await data.map((category: CategoryModel, i: number) => {
+				if (!currentCategoryId) setCurrentCategoryId(category.id);
+				return <Category
+					key={i}
+					imageUrl={category.imageUrl}
+					categoryName={category.name}
+					onClick={() => {
+						setCurrentCategoryId(category.id);
+						router.push(`/category/${category.id}`);
+					}}
+				/>
+			})
+			setCategories(categories);
+		} catch (e) { }
+	}
+
+	useEffect(() => {
+		if (isAuthenticated && user) getCategories();
+	}, [categoryFormVisible, isAuthenticated, user.id, updatedCategory])
+
+	return (
+		<aside className={styles.aside}>
+			<div
+				className={styles.openMenu}
+				style={{ display: `${visibleMenu || props.hideMenuIcon ? "none" : "block"}` }}
+				onClick={() => setVisibleMenu(true)}
+			>
+				<i>{menuIcon}</i>
+			</div>
+			<div className={styles.containerCategories}>
+				<div className={styles.addCategoryButton} onClick={() => setCategoryFormVisible(true)}>
+					<i>{plusIcon}</i>
+				</div>
+				<hr />
+				<>
+					{categories}
+				</>
+			</div>
+		</aside>
+	)
+}

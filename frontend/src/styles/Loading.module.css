@@ -1,0 +1,15 @@
+.loading {
+	width: 100vw;
+	height: 100vh;
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--bg-color);
+	transition: 300ms ease all;
+}
+
+.loading img {
+	width: 70px;
+	height: 70px;
+}

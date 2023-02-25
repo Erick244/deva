@@ -1,0 +1,29 @@
+.category {
+	width: 65px;
+	height: 65px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 20px 0px;
+	background-color: var(--bg-color);
+	color: var(--color2);
+	background-color: #fff;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: all 300ms ease;
+	overflow: hidden;
+}
+
+.category:hover {
+	border-radius: 30%;
+}
+
+.category:active {
+	transform: translateY(3px);
+}
+
+.category > img {
+	width: 100%;
+	height: 100%;
+	
+}

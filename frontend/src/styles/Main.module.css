@@ -1,0 +1,13 @@
+.main {
+	width: 100%;
+	position: relative;
+	overflow-y: scroll;
+	grid-area: main;
+	background-color: var(--bg-color2);
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.199);
+}
+
+.main::-webkit-scrollbar {
+	width: 0px;
+    height: 0px;
+}

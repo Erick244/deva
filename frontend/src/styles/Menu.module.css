@@ -1,0 +1,110 @@
+.menu {
+	grid-area: menu;
+	background-color: var(--bg-color);
+	box-shadow: var(--shadow-right);
+	overflow-y: scroll;
+	z-index: 1;
+}
+
+.menu::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+}
+
+.menu .interaction {
+	display: flex;
+	justify-content: space-between;
+}
+
+.interaction .search {
+	display: flex;
+	align-items: center;
+	margin: 30px 10px;
+}
+
+.search>label {
+	display: flex;
+	margin-right: 5px;
+	font-size: 1.5rem;
+	color: var(--color2);
+	border-right: 1px solid rgba(255, 255, 255, 0.432);
+}
+
+.search>input {
+	font-size: 1rem;
+	padding: 2px;
+	background-color: transparent;
+	color: #fff;
+	border: none;
+	outline: none;
+	border-bottom: 2px solid var(--color2);
+}
+
+.interaction .closeMenu {
+	position: absolute;
+	top: 75px;
+	left: 390px;
+	padding: 2px;
+	font-size: 2rem;
+	color: var(--color3);
+	cursor: pointer;
+	background-color: var(--bg-color);
+	border: 2px solid var(--color);
+	border-left: none;
+	border-radius: 0 5px 5px 0;
+}
+
+.closeMenu i {
+	display: flex;
+}
+
+.interaction .closeMenu i:hover {
+	filter: brightness(1.5);
+}
+
+.createTheme {
+	display: flex;
+	align-items: center;
+	font-weight: 300;
+	margin: 5px 10px;
+	cursor: pointer;
+	transition: all 300ms ease;
+}
+
+.createTheme:hover {
+	filter: drop-shadow(2px 2px 5px #8a427880)
+}
+
+.createTheme div {
+	width: 80%;
+	padding: 7px;
+	border-radius: 5px;
+	color: #fff;
+	background-color: #8a427880;
+	transition: all 300ms ease;
+}
+
+.createTheme:hover div {
+	width: 100%;
+}
+
+.createTheme i {
+	display: flex;
+	font-size: 1.5rem;
+	color: #fff;
+	margin-right: 10px;
+	transition: all 500ms ease;
+}
+
+.createTheme:hover i {
+	transform: rotate(180deg);
+	background-color: #ffffff10;
+	border-radius: 50%;
+}
+
+.menu .notFind {
+	display: flex;
+	justify-content: center;
+	margin-top: 30px;
+	color: #ffffff80;
+}

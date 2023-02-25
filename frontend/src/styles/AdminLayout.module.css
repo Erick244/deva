@@ -1,0 +1,14 @@
+.adminLayout {
+	max-width: 1300px;
+	height: 100%;
+	margin: auto;
+	display: flex;
+	flex-direction: column;
+	overflow: scroll;
+	background-color: var(--bg-color);
+}
+
+.adminLayout::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+}
