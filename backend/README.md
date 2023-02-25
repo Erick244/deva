@@ -8,4 +8,4 @@ npm start
 yarn start
 ```
 
-API: [http://localhost:3001](http://localhost:3001).
+API: [http://localhost:3001](http://localhost:3001)
