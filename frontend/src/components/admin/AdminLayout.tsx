@@ -12,9 +12,10 @@ interface AdminLayoutProps {
 
 export default function AdminLayout(props: AdminLayoutProps) {
 	const { adminLoading, isAuthenticated, valueFromTable, adminOrRedirect, adminPageIndex, updatedTable } = useStore();
+	const { getValues } = props;
 
 	useEffect(() => {
-		if (isAuthenticated) adminOrRedirect(() => props.getValues());
+		if (isAuthenticated) adminOrRedirect(() => getValues());
 	}, [isAuthenticated, valueFromTable, adminPageIndex, updatedTable])
 
 	return (

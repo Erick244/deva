@@ -83,7 +83,7 @@ export default function Menu() {
 					</div>
 					<>
 						{themes.length == 0 && textSearch ? (
-							<span className={styles.notFind}>Tema "{textSearch}" não encontrado.</span>
+							<span className={styles.notFind}>Tema &ldquo;{textSearch}&rdquo; não encontrado.</span>
 						) : (
 							<>
 								{themes}

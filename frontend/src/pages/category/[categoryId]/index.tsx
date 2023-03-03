@@ -61,7 +61,7 @@ export default function UserCategory() {
 			) : (
 				<div className={styles.categoryPage}>
 					<h1 className={styles.title}>
-						Configurações da categoria "{category.name}":
+						Configurações da categoria &ldquo;{category.name}&rdquo;:
 					</h1>
 					<hr />
 					<form className={styles.categoryPageForm} onSubmit={e => e.preventDefault()}>
