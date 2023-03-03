@@ -5,7 +5,7 @@ import { FiLogOut } from "react-icons/fi";
 import { AiOutlinePlus } from "react-icons/ai";
 import { BiSearchAlt, BiEditAlt, BiTrash, BiRename } from "react-icons/bi";
 import { MdMenuOpen, MdMenu, MdOutlineCreateNewFolder, MdTopic, MdOutlineTopic, MdAlternateEmail } from "react-icons/md";
-import { IoIosArrowForward, IoIosCloseCircle, IoMdMore } from "react-icons/io";
+import { IoIosArrowForward, IoIosCloseCircle, IoMdMore, IoIosArrowBack } from "react-icons/io";
 import { HiUsers } from "react-icons/hi";
 import { ImStatsBars } from "react-icons/im";
 
@@ -20,7 +20,8 @@ export const searchIcon = <BiSearchAlt/>;
 export const menuOpenIcon = <MdMenuOpen/>;
 export const menuIcon = <MdMenu/>;
 export const bookmarkIcon = <BsFillBookmarkFill/>;
-export const arrowIcon = <IoIosArrowForward/>;
+export const rightAngleIcon = <IoIosArrowForward/>;
+export const leftAngleIcon = <IoIosArrowBack/>;
 export const hashIcon = <FaHashtag/>;
 export const folderPlusIcon = <MdOutlineCreateNewFolder/>;
 export const usersIcon = <HiUsers/>;

@@ -1,9 +1,7 @@
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useStore } from "../../config/Store";
-import { errorMessage } from "../../config/Toastify";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
 import CategoryModel from "../../models/Category.model";
 import styles from "../../styles/Aside.module.css";
 import Category from "../Category";
@@ -15,32 +13,33 @@ interface AisdeProps {
 
 export default function Aside(props: AisdeProps) {
 	const { visibleMenu, setVisibleMenu } = useStore();
-	const [categories, setCategories] = useState<CategoryModel[]>([]);
+	const [categories, setCategories] = useState<JSX.Element[]>([] as JSX.Element[]);
 	const { user, categoryFormVisible, setCategoryFormVisible, isAuthenticated, setCurrentCategoryId, currentCategoryId, updatedCategory } = useStore();
 	const router = useRouter();
+	const { get } = useCrud();
 
-	async function getCategories() {
-		try {
-			const res = await axios.get(`${baseApiUrl}/userCategories`);
-			const data = await res.data;
-			const categories = await data.map((category: CategoryModel, i: number) => {
-				if (!currentCategoryId) setCurrentCategoryId(category.id);
-				return <Category
-					key={i}
-					imageUrl={category.imageUrl}
-					categoryName={category.name}
-					onClick={() => {
-						setCurrentCategoryId(category.id);
-						router.push(`/category/${category.id}`);
-					}}
-				/>
-			})
-			setCategories(categories);
-		} catch (e) { }
+	function genCategoriesComponents(data: CategoryModel[]) {
+		const categories = data.map((category: CategoryModel, i: number) => {
+			if (!currentCategoryId) setCurrentCategoryId(category.id);
+			return (<Category
+				key={i}
+				imageUrl={category.imageUrl}
+				categoryName={category.name}
+				onClick={() => {
+					setCurrentCategoryId(category.id);
+					router.push(`/category/${category.id}`);
+				}}
+			/>)
+		})
+		setCategories(categories);
 	}
 
 	useEffect(() => {
-		if (isAuthenticated && user) getCategories();
+		if (isAuthenticated) {
+			get("userCategories", data => {
+				genCategoriesComponents(data);
+			})	
+		}
 	}, [categoryFormVisible, isAuthenticated, user.id, updatedCategory])
 
 	return (

@@ -1,14 +1,13 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useStore } from "../../config/Store";
-import { errorMessage, successMessage } from "../../config/Toastify";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
 import styles from "../../styles/Form.module.css";
 
 export default function ThemeForm() {
 	const [name, setName] = useState<string>("");
 	const [label, setLabel] = useState<"Criar" | "Atualizar" | "Excluir">("Criar");
-	const { setThemeFormVisible, currentCategoryId, currentThemeId, mode } = useStore();
+	const { setThemeFormVisible, currentCategoryId, currentThemeId, mode, setCurrentThemeId, setVisibleMenu } = useStore();
+	const { create, get, remove, update } = useCrud();
 
 	function addTheme() {
 		const theme = {
@@ -16,22 +15,8 @@ export default function ThemeForm() {
 			categoryId: currentCategoryId
 		}
 
-		axios.post(`${baseApiUrl}/themes`, theme)
-			.then(() => {
-				setThemeFormVisible(false);
-				successMessage(`Tema "${name}" criado com sucesso`);
-			}).catch(err => errorMessage(err.response.data))
-	}
-
-	async function getTheme() {
-		const resp = await axios.get(`${baseApiUrl}/userThemes/${currentThemeId}`);
-		const data = await resp.data;
-		if (mode === "save") {
-			setLabel("Atualizar");
-		} else {
-			setLabel("Excluir");
-		}
-		setName(data.name);
+		create(theme, "themes", `Tema "${name}" criado com sucesso`);
+		setThemeFormVisible(false);
 	}
 
 	function submit() {
@@ -40,24 +25,29 @@ export default function ThemeForm() {
 			categoryId: currentCategoryId
 		}
 
+		const url = `userThemes/${currentThemeId}`;
+
 		if (mode === "save") {
-			axios.patch(`${baseApiUrl}/userThemes/${currentThemeId}`, theme)
-			.then(() => {
-				setThemeFormVisible(false);
-				successMessage(`Tema "${name}" atualizado com sucesso`);
-			}).catch(err => errorMessage(err.response.data))
+			update(theme, url, `Tema "${name}" atualizado com sucesso`);
+			setThemeFormVisible(false);
 		} else {
-			axios.delete(`${baseApiUrl}/userThemes/${currentThemeId}`)
-			.then(() => {
-				setThemeFormVisible(false);
-				successMessage(`Tema "${name}" excluido com sucesso`);
-			}).catch(err => errorMessage(err.response.data))
+			remove(url, `Tema "${name}" excluido com sucesso`);
+			setThemeFormVisible(false);
+			setVisibleMenu(false);
+			setCurrentThemeId(0);
 		}
 	}
 
 	useEffect(() => {
 		if (currentThemeId) {
-			getTheme();
+			get(`userThemes/${currentThemeId}`, data => {
+				if (mode === "save") {
+					setLabel("Atualizar");
+				} else {
+					setLabel("Excluir");
+				}
+				setName(data.name);
+			});
 		} else {
 			setName("");
 		}

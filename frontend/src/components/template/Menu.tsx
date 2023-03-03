@@ -1,8 +1,7 @@
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useStore } from "../../config/Store";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
 import ThemeModel from "../../models/Theme.model";
 import styles from "../../styles/Menu.module.css";
 import Theme from "../Theme";
@@ -12,18 +11,17 @@ export default function Menu() {
 	const [themes, setThemes] = useState<any[]>([] as any[]);
 	const [textSearch, setTextSearch] = useState<string>("");
 	const { setVisibleMenu, visibleMenu, isAuthenticated, setThemeFormVisible, themeFormVisible, setCurrentThemeId, setMode } = useStore();
-	const [loading, setLoading] = useState<boolean>(true);
 	const router = useRouter();
+	const { get } = useCrud();
 
 	async function getThemes() {
 		try {
-			const resp = await axios.get(`${baseApiUrl}/userThemes?categoryId=${router.query.categoryId}`);
-			const data = await resp.data;
-			filterThemesBySearch(data);
-			setLoading(false);
+			get(`userThemes?categoryId=${router.query.categoryId}`, data => {
+				filterThemesBySearch(data);
+			})
 		} catch (err) {
 			setVisibleMenu(false);
-			return router.push("/");
+			router.push("/");
 		}
 	}
 
@@ -37,7 +35,11 @@ export default function Menu() {
 			setThemes([] as ThemeModel[]);
 		} else {
 			const themesComponents = themesFiltered.map((theme: ThemeModel, i: number) => {
-				return <Theme key={i} title={theme.name} theme={theme} />
+				return <Theme
+					key={i}
+					title={theme.name}
+					theme={theme}
+				/>
 			})
 
 			setThemes(themesComponents);

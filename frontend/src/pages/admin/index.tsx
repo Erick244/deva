@@ -1,22 +1,21 @@
-import axios from "axios";
-import { useRouter } from "next/router"
 import { useEffect, useState } from "react";
 import AdminLayout from "../../components/admin/AdminLayout";
 import { foldersIcon, statsIcon, subThemeIcon, themeIcon, usersIcon } from "../../components/view/Icons";
 import Layout from "../../components/view/Layout";
-import Loading from "../../components/view/Loading";
-import { useStore } from "../../config/Store";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
 import Stats from "../../models/Stats.model";
 import styles from "../../styles/AdminStats.module.css";
 
 export default function Admin() {
 	const [stats, setStats] = useState<Stats>();
+	const { get } = useCrud();
 
-	async function getStats() {
-		const resp = await axios.get(`${baseApiUrl}/stats`);
-		const data = await resp.data;
-		setStats(data);
+	function getStats() {
+		try {
+			get("stats", data => {
+				setStats(data);
+			})
+		} catch (err) { }
 	}
 
 	return (

@@ -4,13 +4,13 @@ const jwt = require("jwt-simple");
 
 module.exports = app => {
 	const signin = async (req, res) => {
-		if (!req.body.email || !req.body.password) return res.status(400).send("Insira Email e Senha");
+		if (!req.body.email || !req.body.password) return res.status(401).send("Insira Email e Senha");
 
 		const user = await app.db("users")
 			.where({ email: req.body.email })
 			.first()
 
-		if (!user) return res.status(400).send("Ususário não cadastrado");
+		if (!user) return res.status(400).send("Usuário não cadastrado");
 
 		const isMatch = comparePasswords(req.body.password, user.password);
 		if (!isMatch) return res.status(401).send("Senha invalida");

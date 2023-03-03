@@ -1,5 +1,6 @@
 .subTheme {
 	display: flex;
+	align-items: center;
 	margin-bottom: 15px;
 	border: 1px solid var(--color3);
 	border-right: none;
@@ -7,7 +8,6 @@
 	border-radius: 0 0 0 5px;
 	font-weight: 100;
 	font-size: 0.9rem;
-	padding: 5px;
 	background-color: #c5c5c507;
 	color: #ffffffcb;
 	cursor: pointer;
@@ -20,6 +20,7 @@
 }
 
 .subTheme a {
+	padding: 5px;
 	flex-grow: 1;
 }
 

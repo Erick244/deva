@@ -1,29 +1,26 @@
-import axios from "axios";
 import { useState } from "react";
 import Gravatar from "react-gravatar";
 import { useStore } from "../../config/Store";
-import { errorMessage, successMessage } from "../../config/Toastify";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
 import styles from "../../styles/UserForm.module.css";
 
 export default function UserForm() {
 	const { user, setUserFormVisible, setUser } = useStore();
 	const [name, setName] = useState<string>(user.name || "");
 	const [imageUrl, setImageUrl] = useState<string>(user.imageUrl || "");
+	const { update } = useCrud();
 
-	const safeUpdate = () => {
-		const data = {
+	const safeUpdate = async () => {
+		const userFrom = {
 			name,
 			imageUrl
 		}
 
-		axios.patch(`${baseApiUrl}/users`, data)
-			.then(() => {
-				setUserFormVisible(false);
-				successMessage("Perfil atualizado com sucesso");
-				setUser({...user, name, imageUrl});
-				localStorage.setItem("user", JSON.stringify({...user, name, imageUrl}));
-			}).catch(err => errorMessage(err.response.data))
+		update(userFrom, "users", "Perfil atualizado com sucesso");
+
+		setUserFormVisible(false);
+		setUser({ ...user, name, imageUrl });
+		localStorage.setItem("user", JSON.stringify({ ...user, name, imageUrl }));
 	}
 
 	return (
@@ -55,14 +52,14 @@ export default function UserForm() {
 				</div>
 				<div className={styles.userImage}>
 					{imageUrl ? (
-						<img 
+						<img
 							src={imageUrl}
 							alt="Foto do usuário"
 							width={100}
 							height={100}
 						/>
 					) : (
-						<Gravatar email={user?.email}/>
+						<Gravatar email={user?.email} />
 					)}
 				</div>
 				<div className={styles.containerButtons}>

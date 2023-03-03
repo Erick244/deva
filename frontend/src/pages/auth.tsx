@@ -1,15 +1,13 @@
 import Image from "next/image";
 import Logo from "../assets/imgs/dark-logo.png"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styles from "../styles/Auth.module.css";
-import axios from "axios";
-import { baseApiUrl } from "../global";
-import { errorMessage, successMessage } from "../config/Toastify";
 import { useStore } from "../config/Store";
 import { useRouter } from "next/router";
-import LoadingGif from "../assets/gifs/loading.gif";
 import Loading from "../components/view/Loading";
 import { arrobaIcon, confirmPasswordIcon, nameIcon, passwordIcon } from "../components/view/Icons";
+import useCrud from "../hooks/useCrud";
+import User from "../models/User.model";
 
 export default function Auth() {
 	// deixar o formulario mais bonito e responsivo e adicionar icones
@@ -20,8 +18,15 @@ export default function Auth() {
 	const [confirmPassword, setConfirmPassword] = useState<string>("");
 	const [loading, setLoading] = useState<boolean>(false);
 	const router = useRouter();
-
+	const { create } = useCrud();
 	const { setUser } = useStore();
+
+	useEffect(() => {
+		if (window.location.pathname.includes('auth')) {
+			localStorage.removeItem("user");
+			setUser({} as User);
+		}
+	}, [])
 
 	function alternateFomMode(e: any) {
 		e.preventDefault();
@@ -29,7 +34,6 @@ export default function Auth() {
 	}
 
 	function signup() {
-
 		const formUser = {
 			name,
 			email,
@@ -37,14 +41,11 @@ export default function Auth() {
 			confirmPassword
 		}
 
-		axios.post(`${baseApiUrl}/signup`, formUser)
-			.then(resp => resp.data)
-			.then(data => {
-				setFormMode("signin");
-				setEmail(formUser.email);
-				setPassword(formUser.password);
-				successMessage("Cadastro realizado com sucesso");
-			}).catch(err => errorMessage(err.response.data))
+		create(formUser, "signup", "Cadastro realizado com sucesso", data => {
+			setFormMode("signin");
+			setEmail(formUser.email);
+			setPassword(formUser.password);
+		})
 	}
 
 	async function signin() {
@@ -54,21 +55,18 @@ export default function Auth() {
 			password
 		}
 
-		await axios.post(`${baseApiUrl}/signin`, formUser)
-			.then(res => res.data)
-			.then(user => {
-				setUser(user);
-				localStorage.setItem("user", JSON.stringify(user));
-				router.push("/");
-			})
-			.catch(err => errorMessage(err.response?.data))
+		create(formUser, "signin", "", user => {
+			setUser(user);
+			localStorage.setItem("user", JSON.stringify(user));
+			router.push("/");
+		})
 		setLoading(false);
 	}
 
 	return (
 		<div className={styles.auth}>
 			{loading ? (
-				<Loading/>
+				<Loading />
 			) : (
 				<>
 					<form onSubmit={e => e.preventDefault()}>
@@ -110,7 +108,7 @@ export default function Auth() {
 								required
 								onChange={(e) => setPassword(e.target.value)}
 							/>
-							<label htmlFor="password"> 
+							<label htmlFor="password">
 								<i className="v-middle">{passwordIcon}</i> | Senha
 							</label>
 						</div>

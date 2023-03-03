@@ -3,54 +3,41 @@ import Editor from "./Editor";
 import styles from "../../styles/CreateContent.module.css";
 import { useStore } from "../../config/Store";
 import { useRouter } from "next/router";
-import axios from "axios";
-import { baseApiUrl } from "../../global";
 import SubThemeModel from "../../models/SubThemeModel.model";
-import { errorMessage, successMessage } from "../../config/Toastify";
+import useCrud from "../../hooks/useCrud";
 
 export default function CreateContent() {
 	const [content, setContent] = useState<any>();
 	const [subTheme, setSubTheme] = useState<SubThemeModel>({} as SubThemeModel);
 	const { setCreateContentVisible, isAuthenticated, createContentVisible, mode } = useStore();
 	const router = useRouter();
-
-	async function getSubTheme() {
-		const resp = await axios.get(`${baseApiUrl}/userSubThemes/${router.query.subThemeId}`);
-		const data = await resp.data;
-		setSubTheme(_ => {
-			if (data.content) {
-				const buf = Buffer.from(data.content.data);
-				setContent(buf.toString());
-			} else {
-				setContent("");
-			}
-			return data;
-		});
-	}
+	const { get, update } = useCrud();
 
 	useEffect(() => {
-		if (isAuthenticated && router.query.subThemeId) getSubTheme();
+		if (isAuthenticated && router.query.subThemeId) {
+			get(`userSubThemes/${router.query.subThemeId}`, data => {
+				if (data.content) {
+					const buf = Buffer.from(data.content.data);
+					setContent(buf.toString());
+				} else {
+					setContent("");
+				}
+				setSubTheme(data);
+			})
+		}
 	}, [isAuthenticated, router.query.subThemeId, createContentVisible])
 
 	function saveContent() {
-		const data = { ...subTheme, content }
-		axios.patch(`${baseApiUrl}/userSubThemes/${data.id}`, data)
-			.then(_ => {
-				successMessage("Conteúdo atualizado com sucesso");
-				setCreateContentVisible(false);
-			}).catch(err => errorMessage(err.response.data))
+		const newSubTheme = { ...subTheme, content }
+		update(newSubTheme, `userSubThemes/${newSubTheme.id}`, "Conteúdo atualizado com sucesso");
+		setCreateContentVisible(false);
 	}
 
 	function deleteContent() {
-		const data = { ...subTheme }
-		data.content = null;
-		axios.patch(`${baseApiUrl}/userSubThemes/${data.id}`, data)
-			.then(_ => {
-				successMessage("Conteúdo excluido com sucesso");
-				setCreateContentVisible(false);
-			}).catch(err => errorMessage(err.response.data))
+		const newSubTheme = { ...subTheme, content: null }
+		update(newSubTheme, `userSubThemes/${newSubTheme.id}`, "Conteúdo excluido com sucesso");
+		setCreateContentVisible(false);
 	}
-
 
 	return (
 		<div className={styles.containerEditor}>

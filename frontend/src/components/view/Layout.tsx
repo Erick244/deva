@@ -19,9 +19,10 @@ interface LayoutProps {
 export default function Layout(props: LayoutProps) {
 	const { visibleMenu, setVisibleMenu, setVisibleContentBar } = useStore();
 	const [gridLayout, setGridLayout] = useState<string>("'header header header' 'aside main main' 'aside main main'");
+	const { children, cleanPage, hideTitle, title, titleIcon } = props;
 
 	useLayoutEffect(() => {
-		if (!props.cleanPage) {
+		if (!cleanPage) {
 			setVisibleContentBar(true);
 			visibleMenu ?
 			setGridLayout("'header header header' 'aside menu main' 'aside menu ContentBar'")
@@ -31,15 +32,15 @@ export default function Layout(props: LayoutProps) {
 			setVisibleContentBar(false);
 			setGridLayout("'header header header' 'aside main main' 'aside main main'");
 		}
-	}, [visibleMenu, props.cleanPage])
+	}, [visibleMenu, cleanPage])
 
 	return (
 		<div className={styles.layout} style={{ gridTemplateAreas: gridLayout }}>
-			<Header icon={props.titleIcon} title={props.title} hideTitle={props.hideTitle} />
-			<Aside hideMenuIcon={!!props.cleanPage} />
+			<Header icon={titleIcon} title={title} hideTitle={hideTitle} />
+			<Aside hideMenuIcon={!!cleanPage} />
 			<Menu />
 			<Main>
-				{props.children}
+				{children}
 			</Main>
 			<ContentBar />
 		</div>

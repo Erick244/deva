@@ -43,11 +43,19 @@ module.exports = app => {
 		}
 	}
 
-	const get = (req, res) => {
-		app.db("users")
-			.select("id", "name", "email", "admin", "imageUrl")
-			.then(users => res.status(200).json(users))
-			.catch(err => res.status(500).send(err));
+	const get = async (req, res) => {
+		try {
+			if (req.query.page) {
+				const users = await app.config.pagination.paginate(req.query.page, "users");
+				res.status(200).send(users);
+			} else {
+				app.db("users")
+					.then(users => res.status(200).send(users))
+					.catch(err => res.status(500).send(err));
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	const getById = async (req, res) => {

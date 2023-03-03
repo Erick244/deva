@@ -51,10 +51,19 @@ module.exports = app => {
 			.catch(err => res.status(500).send());
 	}
 
-	const get = (req, res) => {
-		app.db("themes")
-			.then(themes => res.status(200).send(themes))
-			.catch(err => res.status(500).send(err));
+	const get = async (req, res) => {
+		try {
+			if (req.query.page) {
+				const themes = await app.config.pagination.paginate(req.query.page, "themes");
+				res.status(200).send(themes);
+			} else {
+				app.db("themes")
+					.then(themes => res.status(200).send(themes))
+					.catch(err => res.status(500).send(err));
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 	const getById = async (req, res) => {

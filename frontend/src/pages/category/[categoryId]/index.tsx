@@ -1,16 +1,14 @@
-import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Layout from "../../../components/view/Layout";
 import { useStore } from "../../../config/Store";
-import { baseApiUrl } from "../../../global";
 import CategoryModel from "../../../models/Category.model";
 import styles from "../../../styles/CategoryPage.module.css";
 import DefaultCategoryImage from "../../../assets/imgs/default-category.png";
 import { hashIcon, imageIcon, nameIcon } from "../../../components/view/Icons";
-import { errorMessage, successMessage } from "../../../config/Toastify";
 import Loading from "../../../components/view/Loading";
+import useCrud from "../../../hooks/useCrud";
 
 export default function UserCategory() {
 	const router = useRouter();
@@ -20,22 +18,15 @@ export default function UserCategory() {
 	const [id, setId] = useState<number>(0);
 	const [loading, setLoading] = useState<boolean>(true);
 	const { isAuthenticated, updatedCategory, setUpdateCategory } = useStore();
-
-	async function getCategory() {
-		try {
-			const resp = await axios.get(`${baseApiUrl}/userCategories/${router.query.categoryId}`);
-			const data = await resp.data;
-			setCategory(data);
-			setLoading(false);
-		} catch (err: any) {
-			router.push("/");
-			errorMessage(err.response.data);
-		}
-
-	}
+	const { get, update, remove } = useCrud();
 
 	useEffect(() => {
-		if (isAuthenticated && router.query.categoryId) getCategory();
+		if (isAuthenticated && router.query.categoryId) {
+			get(`userCategories/${router.query.categoryId}`, data => {
+				setCategory(data);
+				setLoading(false);
+			})
+		}
 	}, [isAuthenticated, router.query.categoryId, updatedCategory])
 
 	useEffect(() => {
@@ -44,30 +35,23 @@ export default function UserCategory() {
 		setImageUrl(category.imageUrl || "");
 	}, [category.id])
 
-	function update() {
-		const data = {
+	function updateCategory() {
+		const categoryForm = {
 			name,
 			imageUrl,
 			userId: category.userId
 		}
 
-		axios.patch(`${baseApiUrl}/userCategories/${category.id}`, data)
-			.then(() => {
-				successMessage("Categoria atualizada com sucesso");
-				setUpdateCategory(!updatedCategory);
-			}).catch(err => errorMessage(err.response.data));
+		setUpdateCategory(!updatedCategory);
+		update(categoryForm, `userCategories/${category.id}`, "Categoria atualizada com sucesso");
 	}
 
-	async function remove() {
+	async function removeCategory() {
 		await router.push("/");
-		axios.delete(`${baseApiUrl}/userCategories/${category.id}`)
-			.then(() => {
-				successMessage("Categoria excluida com sucesso");
-				setUpdateCategory(!updatedCategory);
-			}).catch(err => {
-				errorMessage(err.response.data);
-				router.push(`/category/${category.id}`);
-			});
+		setUpdateCategory(!updatedCategory);
+		remove(`userCategories/${category.id}`, "Categoria excluida com sucesso", () => {
+			router.push(`/category/${category.id}`);
+		})
 	}
 
 	return (
@@ -136,10 +120,10 @@ export default function UserCategory() {
 							)}
 						</div>
 						<div className={styles.containerButtons}>
-							<button className={styles.submitButton} onClick={update}>
+							<button className={styles.submitButton} onClick={updateCategory}>
 								Atualizar
 							</button>
-							<button className={styles.cancelButton} onClick={remove}>
+							<button className={styles.cancelButton} onClick={removeCategory}>
 								Excluir
 							</button>
 						</div>

@@ -4,11 +4,12 @@ import styles from "../../styles/Settings.module.css";
 import Link from "next/link";
 import { useStore } from "../../config/Store";
 import useColorTheme from "../../hooks/useColorTheme";
+import User from "../../models/User.model";
 
 export default function Settings() {
 	const [showMenuDropdown, setShowMenuDropdown] = useState<boolean>(false);
 	const [theme, setTheme] = useState<"light" | "dark">("dark");
-	const { user } = useStore();
+	const { user, setUser, setIsAuthenticated } = useStore();
 	const { alternateTheme } = useColorTheme();
 
 	return (
@@ -38,7 +39,10 @@ export default function Settings() {
 					<i>{moonIcon}</i>
 				</div>
 				{user.admin ? (<Link href={"/admin"}>Administração <i>{shieldIcon}</i></Link>) : null}
-				<Link href={"/auth"} onClick={() => localStorage.removeItem("user")}>Sair <i>{logoutIcon}</i></Link>
+				<Link href={"/auth"} onClick={() => {
+					localStorage.removeItem("user");
+					setUser({} as User);
+				}}>Sair <i>{logoutIcon}</i></Link>
 			</div>
 		</div>
 	)

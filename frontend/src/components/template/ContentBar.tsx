@@ -1,32 +1,16 @@
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useStore } from "../../config/Store";
 import { errorMessage } from "../../config/Toastify";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
 import styles from "../../styles/ContentBar.module.css";
 import { editIcon, plusIcon, trashIcon } from "../view/Icons";
 
 export default function ContentBar() {
 	const [contentIsNull, setContentIsNull] = useState<boolean>(true);
 	const { visibleContentBar, isAuthenticated, setCreateContentVisible, createContentVisible, setMode } = useStore();
-
+	const { get } = useCrud();
 	const router = useRouter();
-
-	async function getSubTheme() {
-		try {
-			const resp = await axios.get(`${baseApiUrl}/userSubThemes/${router.query.subThemeId}`);
-			const data = await resp.data;
-			if (!data.content) {
-				setContentIsNull(true);
-			} else {
-				setContentIsNull(false);
-			}
-		} catch (err) {
-			router.push("/");
-			errorMessage("Sub-Tema não encontrado");
-		}
-	}
 
 	function genButtons() {
 		if (contentIsNull) {
@@ -62,7 +46,15 @@ export default function ContentBar() {
 	}
 
 	useEffect(() => {
-		if (isAuthenticated && router.query.subThemeId) getSubTheme();
+		if (isAuthenticated && router.query.subThemeId) {
+			get(`userSubThemes/${router.query.subThemeId}`, data => {
+				if (!data.content) {
+					setContentIsNull(true);
+				} else {
+					setContentIsNull(false);
+				}
+			})
+		}
 	}, [router.query.subThemeId, isAuthenticated, createContentVisible])
 
 	return (

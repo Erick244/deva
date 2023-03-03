@@ -31,11 +31,19 @@ module.exports = app => {
 		}
 	}
 
-	const get = (req, res) => {
-		app.db("subThemes")
-			.select("id", "name", "themeId")
-			.then(subThemes => res.status(200).send(subThemes))
-			.catch(err => res.status(500).send(err))
+	const get = async (req, res) => {
+		try {
+			if (req.query.page) {
+				const subThemes = await app.config.pagination.paginate(req.query.page, "subThemes");
+				res.status(200).send(subThemes);
+			} else {
+				app.db("subThemes")
+					.then(subThemes => res.status(200).send(subThemes))
+					.catch(err => res.status(500).send(err));
+			}
+		} catch (err) {
+			console.log(err);
+		}
 	}
 
 
@@ -44,7 +52,7 @@ module.exports = app => {
 			const subTheme = await app.db("subThemes")
 				.where({ id: req.params.id })
 				.first();
-			existsOrError(subTheme, "Sub-Tema não existe");
+			existsOrError(subTheme, "Sub-Tema não encontrado");
 			res.status(200).send(subTheme);
 		} catch (msg) {
 			return res.status(400).send(msg);
@@ -64,7 +72,7 @@ module.exports = app => {
 				.first();
 			existsOrError(categoryOfUser, "Sub-Tema não encontrados");
 			existsOrError(themeOfSubThemes, "Sub-Tema não encontrados");
-			existsOrError(subTheme, "Sub-Tema não existe");
+			existsOrError(subTheme, "Sub-Tema não encontrado");
 			res.status(200).send(subTheme);
 		} catch (msg) {
 			return res.status(400).send(msg);

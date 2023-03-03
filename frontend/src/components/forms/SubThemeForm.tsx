@@ -1,9 +1,7 @@
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useStore } from "../../config/Store";
-import { errorMessage, successMessage } from "../../config/Toastify";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
 import styles from "../../styles/Form.module.css";
 
 export default function ThemeForm() {
@@ -11,6 +9,7 @@ export default function ThemeForm() {
 	const [label, setLabel] = useState<"Atualizar" | "Criar" | "Excluir">("Criar");
 	const { setSubThemeFormVisible, currentThemeId, mode, currentSubThemeId, currentCategoryId } = useStore();
 	const router = useRouter();
+	const { create, get, update, remove } = useCrud();
 
 	function addSubTheme() {
 		const subTheme = {
@@ -18,22 +17,8 @@ export default function ThemeForm() {
 			themeId: currentThemeId
 		}
 
-		axios.post(`${baseApiUrl}/subThemes`, subTheme)
-			.then(() => {
-				setSubThemeFormVisible(false);
-				successMessage(`Sub-Tema "${name}" criado com sucesso`);
-			}).catch(err => errorMessage(err.response.data))
-	}
-
-	async function getSubTheme() {
-		const resp = await axios.get(`${baseApiUrl}/userSubThemes/${currentSubThemeId}`);
-		const data = await resp.data;
-		if (mode === "save") {
-			setLabel("Atualizar");
-		} else {
-			setLabel("Excluir");
-		}
-		setName(data.name);
+		create(subTheme, "subThemes", `Sub-Tema "${name}" criado com sucesso`);
+		setSubThemeFormVisible(false);
 	}
 
 	async function submit() {
@@ -42,25 +27,28 @@ export default function ThemeForm() {
 			themeId: currentThemeId
 		}
 
+		const url = `userSubThemes/${currentSubThemeId}`;
+
 		if (mode === "save") {
-			axios.patch(`${baseApiUrl}/userSubThemes/${currentSubThemeId}`, theme)
-			.then(() => {
-				setSubThemeFormVisible(false);
-				successMessage(`Sub-Tema "${name}" atualizado com sucesso`);
-			}).catch(err => errorMessage(err.response.data))
+			update(theme, url, `Sub-Tema "${name}" atualizado com sucesso`);
+			setSubThemeFormVisible(false);
 		} else {
-			await axios.delete(`${baseApiUrl}/userSubThemes/${currentSubThemeId}`)
-			.then(() => {
-				setSubThemeFormVisible(false);
-				successMessage(`Sub-Tema "${name}" excluido com sucesso`);
-			}).catch(err => errorMessage(err.response.data))
+			remove(url, `Sub-Tema "${name}" excluido com sucesso`);
+			setSubThemeFormVisible(false);
 			router.push(`/category/${currentCategoryId}`);
 		}
 	}
 
 	useEffect(() => {
 		if (currentSubThemeId) {
-			getSubTheme();
+			get(`userSubThemes/${currentSubThemeId}`, data => {
+				if (mode === "save") {
+					setLabel("Atualizar");
+				} else {
+					setLabel("Excluir");
+				}
+				setName(data.name);
+			});
 		} else {
 			setName("");
 		}

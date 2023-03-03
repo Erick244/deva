@@ -42,6 +42,10 @@ interface StoreProps {
 	setAdminLoading: Dispatch<SetStateAction<boolean>>;
 	updatedCategory: boolean;
 	setUpdateCategory: Dispatch<SetStateAction<boolean>>;
+	updatedTable: boolean;
+	setUpdateTable: Dispatch<SetStateAction<boolean>>;
+	adminPageIndex: number;
+	setAdminPageIndex: Dispatch<SetStateAction<number>>;
 
 }
 
@@ -66,6 +70,8 @@ export default function StoreProvider({ children }: any) {
 	const [colorTheme, setColorTheme] = useState<"light" | "dark">("dark");
 	const [adminLoading, setAdminLoading] = useState<boolean>(true);
 	const [updatedCategory, setUpdateCategory] = useState<boolean>(false);
+	const [updatedTable, setUpdateTable] = useState<boolean>(false);
+	const [adminPageIndex, setAdminPageIndex] = useState<number>(1);
 	const router = useRouter();
 	let loadingValidateToken = false;
 
@@ -73,11 +79,13 @@ export default function StoreProvider({ children }: any) {
 		const userFromLocalStorage = localStorage.getItem("user");
 		if (userFromLocalStorage) {
 			const userParser = JSON.parse(userFromLocalStorage);
-			if (userParser.id) {
+		if (userParser.id) {
 				if (!loadingValidateToken) {
 					loadingValidateToken = true;
-					await validateToken(userParser, () => setUser(() => userParser));
-					setIsAuthenticated(true);
+					await validateToken(userParser, () => {
+						setIsAuthenticated(true);
+						setUser(userParser);
+					});
 				} else {
 					return;
 				}
@@ -102,7 +110,7 @@ export default function StoreProvider({ children }: any) {
 			const resp = await axios.post(`${baseApiUrl}/validateToken`, userParser);
 			const valid = await resp.data;
 			if (valid) {
-				axios.defaults.headers.common["Authorization"] = `bearer ${userParser.token}`
+				axios.defaults.headers.common["Authorization"] = `bearer ${userParser.token}`;
 				finish();
 			} else {
 				localStorage.removeItem("user");
@@ -125,7 +133,7 @@ export default function StoreProvider({ children }: any) {
 
 	useEffect(() => {
 		setUserFromLocalStorage();
-	}, [])
+	}, [user.id])
 
 	function adminOrRedirect(callback: () => void) {
 		if (user.admin) {
@@ -177,7 +185,11 @@ export default function StoreProvider({ children }: any) {
 				adminLoading,
 				setAdminLoading,
 				setUpdateCategory,
-				updatedCategory
+				updatedCategory,
+				adminPageIndex,
+				setAdminPageIndex,
+				setUpdateTable,
+				updatedTable
 			}}
 		>
 			{children}

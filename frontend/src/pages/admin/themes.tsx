@@ -1,29 +1,31 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { Theme } from "react-toastify";
 import AdminLayout from "../../components/admin/AdminLayout";
 import AdminForm from "../../components/admin/template/AdminForm";
 import AdminTable from "../../components/admin/template/AdminTable";
+import ButtonsAdminPage from "../../components/admin/template/ButtonsAdminPage";
 import { themeIcon } from "../../components/view/Icons";
 import Layout from "../../components/view/Layout";
-import Loading from "../../components/view/Loading";
 import { useStore } from "../../config/Store";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
+import AdminData from "../../models/AdminData.model";
 
 export default function AdminUsers() {
-	const [themes, setThemes] = useState<Theme[]>([] as Theme[]);
+	const [themes, setThemes] = useState<AdminData>({} as AdminData);
+	const { adminPageIndex } = useStore();
+	const { get } = useCrud();
 
-	async function getThemes() {
-		const resp = await axios.get(`${baseApiUrl}/themes`);
-		const data = await resp.data;
-		setThemes(data);
+	function getThemes() {
+		get(`themes?page=${adminPageIndex}`, data => {
+			setThemes(data);
+		})
 	}
 
 	return (
 		<Layout title="Temas" titleIcon={themeIcon} cleanPage={true}>
 			<AdminLayout activePage="themes" getValues={getThemes}>
 				<AdminForm formMode="themes" />
-				<AdminTable tableMode="themes" values={themes} />
+				<AdminTable tableMode="themes" values={themes.data} />
+				<ButtonsAdminPage count={themes.count} limit={themes.limit} />
 			</AdminLayout>
 		</Layout>
 	)

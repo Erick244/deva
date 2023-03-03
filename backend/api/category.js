@@ -11,7 +11,7 @@ module.exports = app => {
 				.where({ id: category.userId })
 				.first();
 			existsOrError(userCategory, "O ID do Usuário é invalido")
-			existsOrError(category.name, "Insira o nome da categoria");
+			existsOrError(category.name, "Informe o nome da categoria");
 		} catch (msg) {
 			return res.status(400).send(msg);
 		}
@@ -46,10 +46,20 @@ module.exports = app => {
 			.catch(err => res.status(500).send(err));
 	}
 
-	const get = (req, res) => {
-		app.db("categories")
-			.then(categories => res.status(200).send(categories))
-			.catch(err => res.status(500).send(err));
+	const get = async (req, res) => {
+		try {
+			if (req.query.page) {
+				const categories = await app.config.pagination.paginate(req.query.page, "categories");
+				res.status(200).send(categories);
+			} else {
+				app.db("categories")
+					.then(categories => res.status(200).send(categories))
+					.catch(err => res.status(500).send(err));
+			}
+		} catch (err) {
+			console.log(err);
+		}
+
 	}
 
 	const getById = async (req, res) => {

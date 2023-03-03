@@ -1,8 +1,7 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { useStore } from "../../../config/Store";
-import { errorMessage, successMessage } from "../../../config/Toastify";
-import { baseApiUrl } from "../../../global";
+import useCrud from "../../../hooks/useCrud";
+import FormData from "../../../models/FormData.model";
 import styles from "../../../styles/AdminForm.module.css";
 import Editor from "../../view/Editor";
 import { arrobaIcon, confirmPasswordIcon, hashIcon, imageIcon, nameIcon, passwordIcon, shieldIcon } from "../../view/Icons";
@@ -12,7 +11,7 @@ interface AdminFormProps {
 }
 
 export default function AdminForm(props: AdminFormProps) {
-	const { valueFromTable, setValueFromTable } = useStore();
+	const { valueFromTable, setValueFromTable, setUpdateTable, updatedTable } = useStore();
 	const [placeholderMode, setPlaceholderMode] = useState<string>("");
 	const [buttonLabel, setButtonLabel] = useState<"Criar" | "Excluir" | "Atualizar">("Criar");
 	const [content, setContent] = useState<string>("");
@@ -27,18 +26,7 @@ export default function AdminForm(props: AdminFormProps) {
 	const [themeId, setThemeId] = useState<number>(0);
 	const disable = valueFromTable.formAction === "delete" ? true : false;
 
-	type FormData = {
-		name: string,
-		email: string,
-		password: string,
-		confirmPassword: string,
-		imageUrl: string,
-		userId: number,
-		categoryId: number,
-		themeId: number,
-		admin: boolean,
-		content: string,
-	}
+	const { update, create, remove } = useCrud();
 
 	const setValues = () => {
 		if (Array.from(Object.values(valueFromTable)).length === 0) {
@@ -94,32 +82,7 @@ export default function AdminForm(props: AdminFormProps) {
 		});
 	}
 
-	const update = (data: any) => {
-		axios.patch(`${baseApiUrl}/${props.formMode}/${valueFromTable.id}`, data)
-			.then(() => {
-				successMessage("Atualização realizada com sucesso.");
-				reset();
-			})
-			.catch(err => errorMessage(err.response.data));
-	}
-
-	const create = (data: any) => {
-		axios.post(`${baseApiUrl}/${props.formMode}`, data)
-			.then(() => {
-				successMessage("Criação realizada com sucesso.");
-				reset();
-			}).catch(err => errorMessage(err.response.data));
-	}
-
-	const remove = () => {
-		axios.delete(`${baseApiUrl}/${props.formMode}/${valueFromTable.id}`)
-			.then(() => {
-				successMessage("Excluisão realizada com sucesso.");
-				reset();
-			}).catch(err => errorMessage(err.response.data));
-	}
-
-	const submit = () => {
+	const submit = async () => {
 		const data: FormData = {
 			name,
 			email,
@@ -139,15 +102,17 @@ export default function AdminForm(props: AdminFormProps) {
 
 		switch (valueFromTable.formAction) {
 			case "delete":
-				remove();
+				remove(`${props.formMode}/${valueFromTable.id}`, "Excluisão realizada com sucesso.");
 				break;
 			case "post" || undefined:
-				create(data);
+				create(data, `${props.formMode}`, "Criação realizada com sucesso.");
 				break;
 			case "update":
-				update(data);
+				update(data, `${props.formMode}/${valueFromTable.id}`, "Atualização realizada com sucesso.");
 				break;
 		}
+		setUpdateTable(!updatedTable);
+		reset();
 	}
 
 	useEffect(() => {

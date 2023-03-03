@@ -1,16 +1,15 @@
-import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
 import DefaultCategoryImage from "../../assets/imgs/default-category.png"
 import { useStore } from "../../config/Store";
-import { errorMessage, successMessage } from "../../config/Toastify";
-import { baseApiUrl } from "../../global";
+import useCrud from "../../hooks/useCrud";
 import styles from "../../styles/Form.module.css";
 
 export default function CategoryForm() {
 	const [name, setName] = useState<string>("");
 	const [imageUrl, setImageUrl] = useState<string>("");
 	const { setCategoryFormVisible } = useStore();
+	const { create } = useCrud();
 
 	function addCategory() {
 		const category = {
@@ -18,13 +17,8 @@ export default function CategoryForm() {
 			imageUrl
 		}
 
-		// adicionar uma validação de imagens
-
-		axios.post(`${baseApiUrl}/categories`, category)
-			.then(() => {
-				setCategoryFormVisible(false);
-				successMessage(`Categoria "${name}" criada com sucesso`);
-			}).catch(err => errorMessage(err.response.data))
+		create(category, "categories", `Categoria "${name}" criada com sucesso`);
+		setCategoryFormVisible(false);
 	}
 
 	return (

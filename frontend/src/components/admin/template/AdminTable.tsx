@@ -2,8 +2,7 @@ import { editIcon, trashIcon } from "../../view/Icons";
 import styles from "../../../styles/AdminTable.module.css";
 import { useStore } from "../../../config/Store";
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { baseApiUrl } from "../../../global";
+import useCrud from "../../../hooks/useCrud";
 
 interface AdminTableProps {
 	tableMode: "users" | "categories" | "themes" | "subThemes";
@@ -12,8 +11,9 @@ interface AdminTableProps {
 
 export default function AdminTable(props: AdminTableProps) {
 
-	const { setValueFromTable } = useStore();
+	const { setValueFromTable, updatedTable } = useStore();
 	const [tbody, setTbody] = useState<React.ReactNode[]>();
+	const { get } = useCrud();
 
 	const genThs = () => {
 		switch (props.tableMode) {
@@ -34,57 +34,56 @@ export default function AdminTable(props: AdminTableProps) {
 	}
 
 	const genTbody = async () => {
-		setTbody(() => {
-			return props.values.map((value: any, i: number) => {
-				return (
-					<tr key={i}>
-						<td>{value.id}</td>
-						<td>{value.name}</td>
-						{props.tableMode === "users" ? (
-							<>
-								<td>{value.email}</td>
-								<td>{String(value.admin)}</td>
-							</>
-						) : null}
-						{props.tableMode === "categories" ? (
-							<td>{value.userId}</td>
-						) : null}
-						{props.tableMode === "themes" ? (
-							<td>{value.categoryId}</td>
-						) : null}
-						{props.tableMode === "subThemes" ? (
-							<td>{value.themeId}</td>
-						) : null}
-						<td className={styles.containerButtons}>
-							<button className={styles.edit} onClick={() => setAndGetValue(value.id, "update")}>
-								{editIcon}
-							</button>
-							<button className={styles.delete} onClick={() => setAndGetValue(value.id, "delete")}>
-								{trashIcon}
-							</button>
-						</td>
-					</tr>
-				)
-			})
+		const tbodys = await props.values?.map((value: any, i: number) => {
+			return (
+				<tr key={i}>
+					<td>{value.id}</td>
+					<td>{value.name}</td>
+					{props.tableMode === "users" ? (
+						<>
+							<td>{value.email}</td>
+							<td>{String(value.admin)}</td>
+						</>
+					) : null}
+					{props.tableMode === "categories" ? (
+						<td>{value.userId}</td>
+					) : null}
+					{props.tableMode === "themes" ? (
+						<td>{value.categoryId}</td>
+					) : null}
+					{props.tableMode === "subThemes" ? (
+						<td>{value.themeId}</td>
+					) : null}
+					<td className={styles.containerButtons}>
+						<button className={styles.edit} onClick={() => setAndGetValue(value.id, "update")}>
+							{editIcon}
+						</button>
+						<button className={styles.delete} onClick={() => setAndGetValue(value.id, "delete")}>
+							{trashIcon}
+						</button>
+					</td>
+				</tr>
+			)
+		})
+		setTbody(tbodys);
+	}
+
+	const setAndGetValue = (id: number, formAction: "update" | "delete" | "post") => {
+		get(`${props.tableMode}/${id}`, value => {
+			if (formAction !== "post" && value.content) {
+				const convertContent = Buffer.from(value.content.data);
+				value.content = convertContent.toString();
+				setValueFromTable({ ...value, formAction });
+				return;
+			}
+			setValueFromTable({ ...value, formAction });
 		})
 
 	}
 
-	const setAndGetValue = async (id: number, formAction: "update" | "delete" | "post") => {
-		const resp = await axios.get(`${baseApiUrl}/${props.tableMode}/${id}`);
-		const data = await resp.data;
-		if (formAction !== "post" && data.content) {
-			const convertContent = Buffer.from(data.content.data);
-			data.content = convertContent.toString();
-			setValueFromTable({...data, formAction});
-			return;
-		}
-		setValueFromTable({ ...data, formAction });
-	}
-
 	useEffect(() => {
 		genTbody();
-	}, [props.values]);
+	}, [props.values, updatedTable]);
 
 	return (
 		<table className={styles.table}>
