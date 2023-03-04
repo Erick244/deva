@@ -1,5 +1,5 @@
 import { RiHome7Fill, RiFoldersFill, RiLockPasswordLine, RiLockPasswordFill } from "react-icons/ri";
-import { BsGearFill, BsFillMoonFill, BsFillSunFill, BsFillBookmarkFill, BsImageFill } from "react-icons/bs";
+import { BsGearFill, BsFillMoonFill, BsFillSunFill, BsFillBookmarkFill, BsImageFill, BsArrowDown } from "react-icons/bs";
 import { FaShieldAlt, FaHashtag } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -38,3 +38,4 @@ export const confirmPasswordIcon = <RiLockPasswordFill/>;
 export const imageIcon = <BsImageFill/>;
 export const closeIcon = <IoIosCloseCircle/>;
 export const moreIcon = <IoMdMore/>;
+export const arrowDownIcon = <BsArrowDown/>;
