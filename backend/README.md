@@ -1,7 +1,7 @@
 # Getting Started
 
 ## Attention
-First of all create the `.env` file with the same model as "env.model" and proceed
+First of all, create the `.env` file with the same model as "env.model" and proceed
 
 After, run the development server:
 
