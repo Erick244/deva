@@ -10,7 +10,6 @@ import useCrud from "../hooks/useCrud";
 import User from "../models/User.model";
 
 export default function Auth() {
-	// deixar o formulario mais bonito e responsivo e adicionar icones
 	const [formMode, setFormMode] = useState<"signin" | "signup">("signup");
 	const [name, setName] = useState<string>("");
 	const [email, setEmail] = useState<string>("");

@@ -48,9 +48,18 @@ export default function Menu() {
 
 	useEffect(() => {
 		if (isAuthenticated && visibleMenu && router.query.categoryId) getThemes();
-		return () => setThemes([] as ThemeModel[]);
+		return () => setThemes([] as ThemeModel[]);	
 	}, [isAuthenticated, router.query.categoryId, themeFormVisible, visibleMenu, textSearch])
 
+	if (typeof window !== "undefined") {
+		window.onresize = (e: any) => {
+			const innerWidth = e.currentTarget.innerWidth;
+			if (innerWidth <= 768) {
+				setVisibleMenu(false);
+			}
+		}
+	}
+	
 	return (
 		<menu className={styles.menu}
 			style={{ display: `${visibleMenu ? "block" : "none"}` }}
