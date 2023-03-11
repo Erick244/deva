@@ -130,3 +130,19 @@
 .containerButtons .cancelButton:hover {
 	opacity: 80%;
 }
+
+@media (max-width: 768px) {
+	.categoryPage .title {
+		font-size: 1.4rem;
+		margin-bottom: 21px;
+	}
+
+	.categoryPage hr {
+		display: none;
+	}
+
+	.categoryPage .categoryPageForm {
+		width: 90%;
+	}
+
+}

@@ -7,6 +7,7 @@ interface AdminHeaderProps {
 }
 
 export default function AdminHeader(props: AdminHeaderProps) {
+
 	return (
 		<header className={styles.adminHeader}>
 			<Link href={"/admin/users"} className={`${props.activePage === "users" ? styles.active : null}`}>
